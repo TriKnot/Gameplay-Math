@@ -81,3 +81,18 @@ bool UCollisionSubsystem::RayCast(const FVector& RayOrigin, const FVector& RayDi
 
 	return false;
 }
+
+bool UCollisionSubsystem::TestCollision(const UCollisionComponent* Component, FCollisionHit& CollisionHit)
+{
+	for (const UCollisionComponent* OtherComponent : CollisionComponents)
+	{
+		if(Component == OtherComponent)
+			continue;
+		if(OtherComponent->TestCollision(Component, CollisionHit))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}

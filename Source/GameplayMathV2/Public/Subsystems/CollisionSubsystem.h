@@ -20,7 +20,7 @@ public:
 
 	void ClearAllCollisionsFromComponents();
 	bool RayCast(const FVector& RayOrigin, const FVector& RayDirection, float RayLength, FCollisionHit& CollisionHit);
-
+	bool TestCollision(const UCollisionComponent* Component, FCollisionHit& CollisionHit);
 	void Register(UCollisionComponent* Component) { CollisionComponents.AddUnique(Component); }
 	void Unregister(UCollisionComponent* Component) { CollisionComponents.Remove(Component); }
 

@@ -24,6 +24,8 @@ void UMathMovementComponent::BeginPlay()
 	if(Owner)
 		CollisionComponent = Owner->FindComponentByClass<UCollisionComponent>();
 
+	CollisionSubsystem = GetWorld()->GetSubsystem<UCollisionSubsystem>();
+
 }
 
 void UMathMovementComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -43,30 +45,34 @@ void UMathMovementComponent::Step(float DeltaTime)
 	}
 	const FVector CurrentLocation = Owner->GetActorLocation();
 	const FVector StepVelocity = MoveData.Velocity * DeltaTime;
-	FVector TargetLocation = CurrentLocation + StepVelocity;
+	const FVector TargetLocation = CurrentLocation + StepVelocity;
 
-	const FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal();
-	const TObjectPtr<UCollisionSubsystem> CollisionSubsystem = GetWorld()->GetSubsystem<UCollisionSubsystem>();
-	if(CollisionComponent && CollisionSubsystem)
+	// Sweep
+	int32 MaxSweepStepCount = MaxSweepStepPerSecond * DeltaTime;
+	MaxSweepStepCount = FMath::Max(MaxSweepStepCount, MinSweepStepPerFrame);
+	if(bSweep && CollisionComponent && CollisionSubsystem)
 	{
-		FCollisionHit CollisionHit;
-		const FVector RayStartLocation = CurrentLocation + CollisionComponent->GetCollider().GetBoundaryOffset(Direction);
-		const FVector RayEndLocation = TargetLocation + CollisionComponent->GetCollider().GetBoundaryOffset(Direction);
-		const FVector RayDirection = (RayEndLocation - RayStartLocation).GetSafeNormal();
-		const float RayLength = (RayEndLocation - RayStartLocation).Size() * 1.5f;
-		DrawDebugLine(GetWorld(), RayStartLocation, RayEndLocation, FColor::Red);
-		if(CollisionSubsystem->RayCast(RayStartLocation, RayDirection, RayLength, CollisionHit))
+		const FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal();
+		const float Distance = FVector::Distance(TargetLocation, CurrentLocation);
+		const float SweepStepDistance = Distance / MaxSweepStepCount;
+		FCollisionHit Collision;
+		for(int32 i = 0; i < MaxSweepStepCount; i++)
 		{
-			TargetLocation = CollisionHit.CollisionPoint;
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Raycast hit!"));
+			const FVector SweepLocation = CurrentLocation + Direction * SweepStepDistance * i;
+			Owner->SetActorLocation(SweepLocation);
+			if(CollisionSubsystem->TestCollision(CollisionComponent, Collision))
+			{
+				Owner->SetActorLocation(SweepLocation - Direction * SweepStepDistance);
+				CollisionComponent->HandleCollision(Collision);
+				break;
+			}
 		}
 	}
-	
-	Owner->SetActorLocation(TargetLocation);
-	
-	//DrawDebugLine(GetWorld(), CurrentLocation, StepVelocity * 100.0f, FColor::Red);
-	DrawDebugSphere(GetWorld(), CurrentLocation, 10.0f, 12, FColor::Green);
-	DrawDebugSphere(GetWorld(), TargetLocation, 10.0f, 12, FColor::Blue);
+	else
+	{
+		Owner->SetActorLocation(TargetLocation);
+	}
+
 }
 
 void UMathMovementComponent::AddVelocity(const FVector& Velocity)

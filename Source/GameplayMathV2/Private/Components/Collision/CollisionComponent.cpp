@@ -17,6 +17,10 @@ void UCollisionComponent::BeginPlay()
 	// Check if we have a Collision Component
 	if(UMathMovementComponent* Movement = Actor->FindComponentByClass<UMathMovementComponent>())
 	{
+		if(bIsStatic)
+		{
+			Movement->DestroyComponent();
+		}
 		// Set Collision Response to Ignore
 		MovementComponent = Movement;
 	}
@@ -33,18 +37,26 @@ void UCollisionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UCollisionComponent::HandleCollisions()
 {
-	// TODO: Implement Multiple Collisions
-	if(!MovementComponent) return;
+	for (FCollisionHit Collision : Collisions)
+	{
+		HandleCollision(Collision);
+		return;
+	}
+}
+
+void UCollisionComponent::HandleCollision(FCollisionHit& CollisionHit) const
+{
+	if(bIsStatic || !MovementComponent ) return;
 	
 	// Get Velocity
 	const FVector Velocity = MovementComponent->GetVelocity();
 	// Get Normal
-	const FVector Normal = Collisions[0].CollisionNormal;
+	const FVector Normal = CollisionHit.CollisionNormal;
 
 	// If inside of other collider, move this back
-	if(Collisions[0].Depth > 0.0f)
+	if( CollisionHit.Depth > 0.0f)
 	{
-		GetOwner()->SetActorLocation(GetOwner()->GetActorLocation() + Normal * Collisions[0].Depth);
+		GetOwner()->SetActorLocation(GetOwner()->GetActorLocation() + Normal * CollisionHit.Depth);
 	}
         
 	// Calculate the mirrored velocity using the reflection formula

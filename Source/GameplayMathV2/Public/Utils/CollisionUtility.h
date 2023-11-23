@@ -57,5 +57,5 @@ public:
 
 	static bool IsPlaneOnScreen(const FVector& Center, const FVector& Normal, const FVector2d Bounds,
 		const APlayerController* PlayerController, const float ScreenCompare = 0.75f);
-
+	
 };

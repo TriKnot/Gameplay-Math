@@ -5,6 +5,7 @@
 #include "Structs/MoveData.h"
 #include "MathMovementComponent.generated.h"
 
+class UCollisionSubsystem;
 class UCollisionComponent;
 class AMathActor;
 
@@ -41,8 +42,19 @@ private:
 	UPROPERTY(EditAnywhere, Category= "Movement", meta=( AllowPrivateAccess = "true" ))
 	bool bUseGravity = true;
 
+	UPROPERTY(EditAnywhere, Category= "Movement", meta=( AllowPrivateAccess = "true" ))
+	bool bSweep = true;
+
+	UPROPERTY(EditAnywhere, Category= "Movement", meta=( AllowPrivateAccess = "true" ))
+	int32 MaxSweepStepPerSecond = 1000;
+	UPROPERTY(EditAnywhere, Category= "Movement", meta=( AllowPrivateAccess = "true" ))
+	int32 MinSweepStepPerFrame = 10;
+
 	UPROPERTY()
 	UCollisionComponent* CollisionComponent;
+	UPROPERTY()
+	TObjectPtr<UCollisionSubsystem> CollisionSubsystem;
+
 
 	inline static float Gravity = -9.81f * 100.0f;
 };
