@@ -28,17 +28,34 @@ void UCollisionSubsystem::Tick(float DeltaTime)
 			if(Component == OtherComponent)
 				continue;
 	
-			FCollisionHit CollisionPoint;
 	
+			FCollisionHit CollisionPoint;
 			if(Component->TestCollision(OtherComponent, CollisionPoint))
 			{
 				//Solve Collision
 				Component->AddCollision(CollisionPoint);
+				Component->HandleCollisions();
 				// FVector CollisionPointVector = Actor->GetActorLocation() + CollisionPoint.Normal * CollisionPoint.Depth * 0.5f;
 				// DrawDebugSphere(GetWorld(), CollisionPointVector , 10.0f, 3, FColor::Green, false, 15.0f, 0, 1.0f);
-				Component->HandleCollisions();
 			}
 		}
+		
+		
+		if(NoiseFloor)
+		{
+			FCollisionHit CollisionPoint;
+			TestAgainstFloor(Component, CollisionPoint);
+			
+			// TArray<FVector> TrianglePoints;
+			// NoiseFloor->FindClosestTriangle(Component->GetOwner()->GetActorLocation(), TrianglePoints);
+			//
+			// // Draw Closest Triangle
+			// DrawDebugLine(GetWorld(), TrianglePoints[0], TrianglePoints[1], FColor::Green, false, 5.0f, 0, 1.0f);
+			// DrawDebugLine(GetWorld(), TrianglePoints[1], TrianglePoints[2], FColor::Green, false, 5.0f, 0, 1.0f);
+			// DrawDebugLine(GetWorld(), TrianglePoints[2], TrianglePoints[0], FColor::Green, false, 5.0f, 0, 1.0f);
+			//
+		}
+		
 	}
 }
 
@@ -49,7 +66,6 @@ void UCollisionSubsystem::ClearAllCollisionsFromComponents()
 		CollisionComponent->ClearCollisions();
 	}
 }
-
 
 bool UCollisionSubsystem::RayCast(const FVector& RayOrigin, const FVector& RayDirection, const float RayLength,
 	FCollisionHit& CollisionHit)
@@ -82,7 +98,7 @@ bool UCollisionSubsystem::RayCast(const FVector& RayOrigin, const FVector& RayDi
 	return false;
 }
 
-bool UCollisionSubsystem::TestCollision(const UCollisionComponent* Component, FCollisionHit& CollisionHit)
+bool UCollisionSubsystem::TestCollision(UCollisionComponent* Component, FCollisionHit& CollisionHit)
 {
 	for (const UCollisionComponent* OtherComponent : CollisionComponents)
 	{
@@ -93,7 +109,38 @@ bool UCollisionSubsystem::TestCollision(const UCollisionComponent* Component, FC
 			return true;
 		}
 	}
+	if(	TestAgainstFloor(Component, CollisionHit))
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Bounce")));
+		return true;
+	}
+	
+	return false;
+}
 
+bool UCollisionSubsystem::TestAgainstFloor(UCollisionComponent* Component, FCollisionHit& CollisionHit) const
+{
+	if(Component->TestCollision(NoiseFloor, CollisionHit))
+	{
+		//Solve Collision
+		Component->AddCollision(CollisionHit);
+		Component->HandleCollisions();
+
+		// 		
+		// TArray<FVector> TrianglePoints;
+		// NoiseFloor->FindClosestTriangle(Component->GetOwner()->GetActorLocation(), TrianglePoints);
+		//
+		// // Draw Triangle Hit
+		// DrawDebugLine(GetWorld(), TrianglePoints[0], TrianglePoints[1], FColor::Red, false, 15.0f, 0, 1.0f);
+		// DrawDebugLine(GetWorld(), TrianglePoints[1], TrianglePoints[2], FColor::Red, false, 15.0f, 0, 1.0f);
+		// DrawDebugLine(GetWorld(), TrianglePoints[2], TrianglePoints[0], FColor::Red, false, 15.0f, 0, 1.0f);
+		//
+		// // Draw Collision Point 
+		// DrawDebugBox(GetWorld(), Component->GetOwner()->GetActorLocation(), FVector(10.0f, 10.0f, 10.0f), FColor::Blue, false, 15.0f, 0, 1.0f);
+		// DrawDebugBox(GetWorld(), CollisionHit.CollisionNormal, FVector(10.0f, 10.0f, 10.0f), FColor::Blue, false, 15.0f, 0, 1.0f);
+		// DrawDebugLine(GetWorld(), CollisionHit.CollisionPoint, CollisionHit.CollisionPoint + CollisionHit.CollisionNormal * CollisionHit.Depth, FColor::Red, false, 15.0f, 0, 1.0f);
+		return true;
+	}
 	return false;
 }
 

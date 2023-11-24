@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "Collider.generated.h"
 
+class ANoiseFloor;
 struct FBoxCollider;
 struct FCollisionHit;
 struct FCollisionPoint;
@@ -50,6 +51,11 @@ struct FCollider
 	const FBoxCollider& OtherCollider,
 	const FTransform OtherTransform,
 	FCollisionHit& CollisionPoint) const;
+
+	virtual bool TestCollision(
+		const FTransform Transform,
+		ANoiseFloor* Other,
+		FCollisionHit& CollisionPoint) const;
 	
 	virtual ~FCollider() {}
 	

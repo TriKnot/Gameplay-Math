@@ -28,4 +28,9 @@ bool FCollider::TestCollision(const FTransform Transform, const FBoxCollider& Ot
 	return false;
 }
 
+bool FCollider::TestCollision(const FTransform Transform, ANoiseFloor* Other, FCollisionHit& CollisionPoint) const
+{
+	return false;
+}
+
 

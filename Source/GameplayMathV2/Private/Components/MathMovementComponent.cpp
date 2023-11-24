@@ -62,7 +62,8 @@ void UMathMovementComponent::Step(float DeltaTime)
 			Owner->SetActorLocation(SweepLocation);
 			if(CollisionSubsystem->TestCollision(CollisionComponent, Collision))
 			{
-				Owner->SetActorLocation(SweepLocation - Direction * SweepStepDistance);
+				Owner->SetActorLocation(SweepLocation - Direction * -Collision.Depth * 2 + Direction * 0.1f);
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Collision Depth: %f"), Collision.Depth));
 				CollisionComponent->HandleCollision(Collision);
 				break;
 			}

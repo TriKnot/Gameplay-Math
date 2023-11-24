@@ -41,6 +41,12 @@ struct FBoxCollider : public FCollider
 	const FBoxCollider& OtherCollider,
 	const FTransform OtherTransform,
 	FCollisionHit& CollisionPoint) const override;
+
+	virtual bool TestCollision(
+	const FTransform Transform,
+	ANoiseFloor* Other,
+	FCollisionHit& CollisionPoint) const override;
+
 	
 };
 

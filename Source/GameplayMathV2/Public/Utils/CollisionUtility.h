@@ -57,5 +57,12 @@ public:
 
 	static bool IsPlaneOnScreen(const FVector& Center, const FVector& Normal, const FVector2d Bounds,
 		const APlayerController* PlayerController, const float ScreenCompare = 0.75f);
+
+	// Ray-Triangle Intersection
+	static bool RayTriangle(const FVector& Origin, const FVector& Direction, const FVector& V0, const FVector& V1, const FVector& V2,
+		FCollisionHit& ContactPoint);
 	
+	static bool SphereTriangleIntersection(const FVector& SphereCenter, float SphereRadius, const FVector& V0, const FVector& V1,
+		const FVector& V2, FCollisionHit& CollisionHit);
+static bool IsPointInsideTriangle(const FVector& Point, const FVector& V0, const FVector& V1, const FVector& V2);
 };

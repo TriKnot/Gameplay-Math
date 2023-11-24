@@ -3,6 +3,7 @@
 #include "Structs/Colliders/BoxCollider.h"
 #include "Structs/Colliders/PlaneCollider.h"
 #include "Utils/CollisionUtility.h"
+#include "Actor/NoiseFloor.h"
 
 bool FSphereCollider::TestCollision(const FTransform Transform, const FCollider& OtherCollider,
 	const FTransform OtherTransform, FCollisionHit& CollisionPoint) const
@@ -37,4 +38,14 @@ bool FSphereCollider::TestCollision(const FTransform Transform, const FBoxCollid
 	const FTransform OtherTransform, FCollisionHit& CollisionPoint) const
 {
 	return UCollisionUtility::SphereAABBCollision(Transform.GetLocation(), Radius, OtherTransform.GetLocation(), OtherCollider.Extent, CollisionPoint);
+}
+
+bool FSphereCollider::TestCollision(const FTransform Transform, ANoiseFloor* Other,
+	FCollisionHit& CollisionPoint) const
+{
+	// Get closest point on noise floor
+	TArray<FVector> TrianglePoints;
+	Other->FindClosestTriangle(Transform.GetLocation(), TrianglePoints);
+	
+	return UCollisionUtility::SphereTriangleIntersection(Transform.GetLocation(), Radius, TrianglePoints[0], TrianglePoints[1], TrianglePoints[2], CollisionPoint);
 }

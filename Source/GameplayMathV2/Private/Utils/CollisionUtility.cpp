@@ -2,8 +2,6 @@
 #include "Structs/Colliders/SphereCollider.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/Collision/CollisionComponent.h"
-#include "Structs/Colliders/BoxCollider.h"
-#include "Structs/Colliders/PlaneCollider.h"
 
 
 bool UCollisionUtility::PlanePlaneCollision(	const FVector& NormalA, const FVector2d BoundsA,
@@ -74,7 +72,7 @@ bool UCollisionUtility::SphereSphereCollision(const FVector& CenterA, const floa
 		const float Distance = FMath::Sqrt(Center.SizeSquared());
 		CollisionHit.CollisionPoint = CenterB + (Center * (RadiusB / Distance));
 		CollisionHit.CollisionNormal = Center.GetSafeNormal();
-		CollisionHit.Depth = RadiusSum - Distance;
+		CollisionHit.Depth = (RadiusSum - Distance) * 1.5;
 		return true;
 	}
 	return false;
@@ -361,5 +359,106 @@ bool UCollisionUtility::IsPlaneOnScreen(const FVector& Center, const FVector& No
 	return false;
 }
 
+bool UCollisionUtility::RayTriangle(const FVector& Origin, const FVector& Direction, const FVector& V0, const FVector& V1,
+	const FVector& V2, FCollisionHit& ContactPoint)
 
-// Ray Triangle 
+{
+	const FVector E1 = V1 - V0;
+	const FVector E2 = V2 - V0; 
+
+	const auto P = Direction.Cross(E2);
+	const auto A = E1.Dot(P);
+
+	// No intersection or infinite intersections
+	if(FMath::IsNearlyEqual(A, 0.f))
+		return false;
+
+	const auto F = 1.f / A;
+	const auto S = Origin - V0;
+	const auto U = F * S.Dot(P);
+
+	// Outside triangle bounds on U axis.
+	if(U < 0.f || U > 1.f)
+		return false;
+
+	const auto Q = S.Cross(E1);
+	const auto V = F * Direction.Dot(Q);
+
+	// Outside triangle bounds V axis (remove 'U +' to check quad instead of triangle).
+	if(V < 0.f || U + V > 1.f)
+		return false;
+
+	const auto T = F * E2.Dot(Q);
+
+	ContactPoint.CollisionPoint = Origin + (Direction * T);
+	ContactPoint.CollisionNormal = (V1 - V0).Cross(V2 - V0).GetSafeNormal();
+	ContactPoint.Depth = T;
+		
+	return T >= 0.f;
+}
+
+bool UCollisionUtility::SphereTriangleIntersection(const FVector& SphereCenter, const float SphereRadius,
+	const FVector& V0, const FVector& V1, const FVector& V2, FCollisionHit& CollisionHit)
+{
+	// Calculate the normal of the triangle
+	const FVector Normal = FVector::CrossProduct(V1 - V0, V2 - V0).GetSafeNormal();
+
+	// Calculate the direction from the sphere center to the triangle
+	const FVector DirectionToTriangle = SphereCenter - V0;
+
+	// Calculate the distance from the sphere center to the triangle plane
+	const float DistanceToPlane = FMath::Abs(FVector::DotProduct(DirectionToTriangle, Normal));
+	
+	// Check if sphere center is outside the triangle plane
+	if (DistanceToPlane > SphereRadius ) {
+		return false;
+	}
+	
+	// Calculate the projection of the sphere center onto the triangle plane
+	const FVector ProjectedCenter = SphereCenter - DistanceToPlane * Normal;
+
+	// Check if the projected point is inside the triangle // TODO - Check if this is correct and optimize -> Feels very hacky
+	if (!IsPointInsideTriangle(ProjectedCenter, V0, V1, V2)) {
+		const FVector ProjectedCenterToV0 = V0 - ProjectedCenter;
+		if(IsPointInsideTriangle(ProjectedCenterToV0, V0, V1, V2))
+		{
+			const FVector ProjectedCenterToV1 = V1 - ProjectedCenter;
+			if(IsPointInsideTriangle(ProjectedCenterToV1, V0, V1, V2))
+			{
+				const FVector ProjectedCenterToV2 = V2 - ProjectedCenter;
+				if(IsPointInsideTriangle(ProjectedCenterToV2, V0, V1, V2))
+				{
+					return false;
+				}
+			}
+		}
+	}
+
+	// Calculate the collision point, normal, and depth
+	CollisionHit.CollisionPoint = ProjectedCenter;
+	CollisionHit.CollisionNormal = Normal;
+	if (FVector::DotProduct(Normal, DirectionToTriangle) < 0) {
+		CollisionHit.CollisionNormal *= -1;
+	}
+	CollisionHit.Depth = SphereRadius;
+
+	return true;
+}
+
+bool UCollisionUtility::IsPointInsideTriangle(const FVector& Point, const FVector& V0, const FVector& V1, const FVector& V2)
+{
+	// Calculate vectors
+	const FVector Edge0 = V1 - V0;
+	const FVector Edge1 = V2 - V1;
+	const FVector Edge2 = V0 - V2;
+
+	// Calculate normals
+	const FVector Normal0 = FVector::CrossProduct(Edge0, Point - V0);
+	const FVector Normal1 = FVector::CrossProduct(Edge1, Point - V1);
+	const FVector Normal2 = FVector::CrossProduct(Edge2, Point - V2);
+
+	// Check if the point is on the same side of all edges' normals
+	return FVector::DotProduct(Normal0, Normal1) >= 0 &&
+		   FVector::DotProduct(Normal1, Normal2) >= 0 &&
+		   FVector::DotProduct(Normal2, Normal0) >= 0;
+}

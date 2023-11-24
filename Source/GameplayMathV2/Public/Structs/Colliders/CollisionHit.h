@@ -6,6 +6,8 @@ struct FCollisionHit
 	FVector CollisionNormal; // Normal of the collision
 	float Depth; // Length of B - A
 
+	TArray<FVector> TestPoints;
+
 	// For testing
 	FVector A;
 	FVector B;

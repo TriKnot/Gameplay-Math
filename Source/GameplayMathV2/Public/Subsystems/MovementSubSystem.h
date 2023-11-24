@@ -18,7 +18,6 @@ public:
 	void Unregister(UMathMovementComponent* InComponent);
 
 	void UpdateMoveData(float DeltaTime);
-	void ApplyMoveData();
 	
 	void SetDrawDebug(const bool bNewDrawDebug) { bDrawDebug = bNewDrawDebug; }
 

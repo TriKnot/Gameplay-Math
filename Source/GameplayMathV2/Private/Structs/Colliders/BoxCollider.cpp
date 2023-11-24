@@ -42,3 +42,10 @@ bool FBoxCollider::TestCollision(const FTransform Transform, const FBoxCollider&
 	const FVector MaxB = OtherTransform.GetLocation() + OtherCollider.Extent;
 	return UCollisionUtility::AABBCollision(MinA, MaxA, MinB, MaxB, CollisionPoint);
 }
+
+bool FBoxCollider::TestCollision(const FTransform Transform, ANoiseFloor* Other,
+	FCollisionHit& CollisionPoint) const
+{
+	// TODO: Implement
+	return false;
+}

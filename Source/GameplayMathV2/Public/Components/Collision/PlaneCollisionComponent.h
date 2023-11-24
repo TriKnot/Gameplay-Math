@@ -24,6 +24,11 @@ public:
 		return PlaneCollider.TestCollision(GetOwner()->GetActorTransform(), Other->GetCollider(), Other->GetOwner()->GetActorTransform(), OutCollision);
 	}
 
+	virtual bool TestCollision(ANoiseFloor* Other, FCollisionHit& OutCollision) const override
+	{
+		return PlaneCollider.TestCollision(GetOwner()->GetActorTransform(), Other, OutCollision);
+	}
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FPlaneCollider PlaneCollider;

@@ -182,9 +182,11 @@ void ANoiseFloor::FindClosestTriangle(const FVector& Point, TArray<FVector>& Ret
 	if (ClosestTriangleIndex != -1)
 	{
 		// Add the indices of the vertices of the closest triangle to the output array
-		ReturnTriangle.Add(Vertices[Triangles[ClosestTriangleIndex * 3]]);
-		ReturnTriangle.Add(Vertices[Triangles[ClosestTriangleIndex * 3 + 1]]);
-		ReturnTriangle.Add(Vertices[Triangles[ClosestTriangleIndex * 3 + 2]]);
+		const FVector ActorLocation = GetActorLocation();
+		ReturnTriangle.Add(Vertices[Triangles[ClosestTriangleIndex * 3]] + ActorLocation);
+		ReturnTriangle.Add(Vertices[Triangles[ClosestTriangleIndex * 3 + 1]]+ ActorLocation);
+		ReturnTriangle.Add(Vertices[Triangles[ClosestTriangleIndex * 3 + 2]]+ ActorLocation);
 	}
 }
+
 

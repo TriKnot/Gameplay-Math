@@ -5,6 +5,7 @@
 #include "Structs/Colliders/Collider.h"
 #include "CollisionComponent.generated.h"
 
+class ANoiseFloor;
 class UMathMovementComponent;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hidecategories=(Variable, Sockets, Tags, ComponentTick, ComponentReplication, Activation, Cooking, Events, AssetUserData, Replication, Navigation))
@@ -16,7 +17,7 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	void HandleCollisions();
-	void HandleCollision(FCollisionHit& CollisionHit) const;
+	void HandleCollision(const FCollisionHit& CollisionHit) const;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -39,6 +40,10 @@ public:
 		return Collider.TestCollision(GetOwner()->GetActorTransform(), Other->GetCollider(), Other->GetOwner()->GetActorTransform(), OutCollision);
 	}
 
+	virtual bool TestCollision(ANoiseFloor* Other, FCollisionHit& OutCollision) const
+	{
+		return Collider.TestCollision(GetOwner()->GetActorTransform(), Other, OutCollision);
+	}
 
 public:
 	bool bIsTrigger;

@@ -38,14 +38,14 @@ void UCollisionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UCollisionComponent::HandleCollisions()
 {
-	for (FCollisionHit Collision : Collisions)
+	for (const FCollisionHit Collision : Collisions)
 	{
 		HandleCollision(Collision);
 		return;
 	}
 }
 
-void UCollisionComponent::HandleCollision(FCollisionHit& CollisionHit) const
+void UCollisionComponent::HandleCollision(const FCollisionHit& CollisionHit) const
 {
 	if(!bIsCollisionActive || !MovementComponent ) return;
 	

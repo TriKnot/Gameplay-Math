@@ -20,6 +20,5 @@ void AMathActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AMathActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 

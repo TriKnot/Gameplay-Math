@@ -41,6 +41,12 @@ struct FSphereCollider : public FCollider
 	const FTransform OtherTransform,
 	FCollisionHit& CollisionPoint) const override;
 
+	virtual bool TestCollision(
+	const FTransform Transform,
+	ANoiseFloor* Other,
+	FCollisionHit& CollisionPoint) const override;
+
+
 	virtual FVector GetBoundaryOffset(const FVector& Vector) const override
 	{
 		return Vector.GetSafeNormal() * Radius;
