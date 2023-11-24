@@ -6,6 +6,7 @@
 #include "CollisionSubsystem.generated.h"
 
 class UCollisionComponent;
+class ANoiseFloor;
 struct FCollisionPoint;
 
 UCLASS()
@@ -24,8 +25,8 @@ public:
 	bool TestCollision(const UCollisionComponent* Component, FCollisionHit& CollisionHit);
 	void Register(UCollisionComponent* Component) { CollisionComponents.AddUnique(Component); }
 	void Unregister(UCollisionComponent* Component) { CollisionComponents.Remove(Component); }
-	void RegisterNoiseFloor(ANoiseFloor* NoiseFloor) { this->NoiseFloor = NoiseFloor; }
-	void UnregisterNoiseFloor(ANoiseFloor* NoiseFloor) { this->NoiseFloor = nullptr; }
+	void RegisterNoiseFloor(ANoiseFloor* InNoiseFloor) { NoiseFloor = InNoiseFloor; }
+	void UnregisterNoiseFloor() { NoiseFloor = nullptr; }
 
 private:
 	UPROPERTY()

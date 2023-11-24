@@ -60,7 +60,7 @@ void ANoiseFloor::BeginPlay()
 void ANoiseFloor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-	GetWorld()->GetSubsystem<UCollisionSubsystem>()->UnregisterNoiseFloor(this);
+	GetWorld()->GetSubsystem<UCollisionSubsystem>()->UnregisterNoiseFloor();
 }
 
 void ANoiseFloor::Tick(float DeltaTime)

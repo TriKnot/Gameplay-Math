@@ -97,6 +97,3 @@ bool UCollisionSubsystem::TestCollision(const UCollisionComponent* Component, FC
 	return false;
 }
 
-void UCollisionSubsystem::RegisterNoiseFloor(ANoiseFloor* NoiseFloor)
-{
-}
