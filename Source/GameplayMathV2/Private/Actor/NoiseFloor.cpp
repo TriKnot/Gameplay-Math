@@ -2,6 +2,7 @@
 
 #include "KismetProceduralMeshLibrary.h"
 #include "ProceduralMeshComponent.h"
+#include "Subsystems/CollisionSubsystem.h"
 
 
 ANoiseFloor::ANoiseFloor()
@@ -53,12 +54,13 @@ void ANoiseFloor::BeginPlay()
 	ProceduralMeshComponent->CreateMeshSection(0, Vertices, Triangles, Normals, UV, Colors, Tangents, true);
 	ProceduralMeshComponent->SetMaterial(0, Material);
 	
-	// GetWorld()->GetSubsystem<UIntersectionSubsystem>()->RegisterNoiseTerrain(this);
+	GetWorld()->GetSubsystem<UCollisionSubsystem>()->RegisterNoiseFloor(this);
 }
 
 void ANoiseFloor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
+	GetWorld()->GetSubsystem<UCollisionSubsystem>()->UnregisterNoiseFloor(this);
 }
 
 void ANoiseFloor::Tick(float DeltaTime)
@@ -80,7 +82,7 @@ void ANoiseFloor::Tick(float DeltaTime)
 		Colors,
 		Tangents
 		);
-	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Red, FString::Printf(TEXT("NoiseFloor: %s"), *Offset.ToString()));
+	
 }
 
 void ANoiseFloor::GenerateNoiseMap()
@@ -150,3 +152,39 @@ void ANoiseFloor::CalculateNormals()
 		}
 	}
 }
+
+void ANoiseFloor::FindClosestTriangle(const FVector& Point, TArray<FVector>& ReturnTriangle)
+{
+	// Calculate the closest triangle to the given point
+	float ClosestDistanceSquared = MAX_FLT;
+	int32 ClosestTriangleIndex = -1;
+
+	// Iterate through triangles
+	for (int32 TriangleIndex = 0; TriangleIndex < Triangles.Num(); TriangleIndex += 3)
+	{
+		// Get the vertices of the triangle
+		const FVector& V0 = Vertices[Triangles[TriangleIndex]];
+		const FVector& V1 = Vertices[Triangles[TriangleIndex + 1]];
+		const FVector& V2 = Vertices[Triangles[TriangleIndex + 2]];
+
+		// Calculate the distance between the point and the triangle
+		FVector Middle = (V0 + V1 + V2) / 3.f;
+		const float DistanceSquared = FVector::DistSquared(Point, Middle);
+
+		// Check if this triangle is closer
+		if (DistanceSquared < ClosestDistanceSquared)
+		{
+			ClosestDistanceSquared = DistanceSquared;
+			ClosestTriangleIndex = TriangleIndex / 3; // Store the triangle index
+		}
+	}
+
+	if (ClosestTriangleIndex != -1)
+	{
+		// Add the indices of the vertices of the closest triangle to the output array
+		ReturnTriangle.Add(Vertices[Triangles[ClosestTriangleIndex * 3]]);
+		ReturnTriangle.Add(Vertices[Triangles[ClosestTriangleIndex * 3 + 1]]);
+		ReturnTriangle.Add(Vertices[Triangles[ClosestTriangleIndex * 3 + 2]]);
+	}
+}
+

@@ -16,6 +16,7 @@ public:
 	void GenerateNoiseMap();
 	void CalculateNormals();
 	void GenerateMesh();
+	void FindClosestTriangle(const FVector& Point, TArray<FVector>& ReturnTriangle);
 	virtual void OnConstruction(const FTransform& Transform) override;
 	
 	// Called every frame
