@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "Actor/NoiseFloor.h"
 #include "Structs/Colliders/CollisionHit.h"
 #include "CollisionSubsystem.generated.h"
 
@@ -23,9 +24,13 @@ public:
 	bool TestCollision(const UCollisionComponent* Component, FCollisionHit& CollisionHit);
 	void Register(UCollisionComponent* Component) { CollisionComponents.AddUnique(Component); }
 	void Unregister(UCollisionComponent* Component) { CollisionComponents.Remove(Component); }
+	void RegisterNoiseFloor(ANoiseFloor* NoiseFloor) { this->NoiseFloor = NoiseFloor; }
+	void UnregisterNoiseFloor(ANoiseFloor* NoiseFloor) { this->NoiseFloor = nullptr; }
 
 private:
 	UPROPERTY()
 	TArray<UCollisionComponent*> CollisionComponents;
+	UPROPERTY()
+	ANoiseFloor* NoiseFloor;
 	
 };
