@@ -6,6 +6,7 @@
 void UCollisionComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	if(!bIsCollisionActive) return;
 	if (UCollisionSubsystem* CollisionSubsystem = GetWorld()->GetSubsystem<UCollisionSubsystem>())
 	{
 		CollisionSubsystem->Register(this);
@@ -17,7 +18,7 @@ void UCollisionComponent::BeginPlay()
 	// Check if we have a Collision Component
 	if(UMathMovementComponent* Movement = Actor->FindComponentByClass<UMathMovementComponent>())
 	{
-		if(bIsStatic)
+		if(bIsKinematic)
 		{
 			Movement->DestroyComponent();
 		}
@@ -46,7 +47,7 @@ void UCollisionComponent::HandleCollisions()
 
 void UCollisionComponent::HandleCollision(FCollisionHit& CollisionHit) const
 {
-	if(bIsStatic || !MovementComponent ) return;
+	if(!bIsCollisionActive || !MovementComponent ) return;
 	
 	// Get Velocity
 	const FVector Velocity = MovementComponent->GetVelocity();

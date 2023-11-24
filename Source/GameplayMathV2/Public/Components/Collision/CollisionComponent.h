@@ -49,10 +49,14 @@ protected:
 	TArray<FCollisionHit> Collisions;
 	
 	UPROPERTY(EditAnywhere, meta=( AllowPrivateAccess = "true" ))
-	bool bIsStatic;
+	bool bIsKinematic;
 
-	UPROPERTY(VisibleAnywhere, meta=( AllowPrivateAccess = "true" ))
+	UPROPERTY(EditAnywhere, meta=( AllowPrivateAccess = "true" ))
+	bool bIsCollisionActive;
+	
+	UPROPERTY()
 	UMathMovementComponent* MovementComponent;
 
+	
 	
 };
