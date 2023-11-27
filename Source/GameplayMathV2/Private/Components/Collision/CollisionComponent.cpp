@@ -62,16 +62,18 @@ void UCollisionComponent::HandleCollision(const FCollisionHit& CollisionHit) con
         
 	// Calculate the mirrored velocity using the reflection formula
 	const FVector MirroredVelocity = Velocity - 2 * FVector::DotProduct(Velocity, Normal) * Normal;
+	// Reverse Velocity
+	const FVector ReversedVelocity = -Velocity;
 	
 	// Set the mirrored velocity to the MovementComponent
-	MovementComponent->SetVelocity(MirroredVelocity);
+	MovementComponent->AddVelocity(ReversedVelocity * 2);
 }
 
 void UCollisionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                         FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	DrawDebugCollider();
+	//DrawDebugCollider();
 }
 
 void UCollisionComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
