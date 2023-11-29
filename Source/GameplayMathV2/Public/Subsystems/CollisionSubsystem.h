@@ -21,6 +21,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void ClearAllCollisionsFromComponents();
+	UFUNCTION(BlueprintCallable)
 	bool RayCast(const FVector& RayOrigin, const FVector& RayDirection, float RayLength, FCollisionHit& CollisionHit);
 	bool TestCollision(UCollisionComponent* Component, FCollisionHit& CollisionHit);
 	void Register(UCollisionComponent* Component) { CollisionComponents.AddUnique(Component); }
@@ -30,7 +31,7 @@ public:
 	bool TestAgainstFloor(UCollisionComponent* Component, FCollisionHit& CollisionHit) const;
 
 private:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TArray<UCollisionComponent*> CollisionComponents;
 	UPROPERTY()
 	ANoiseFloor* NoiseFloor;

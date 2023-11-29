@@ -66,7 +66,7 @@ void UCollisionComponent::HandleCollision(const FCollisionHit& CollisionHit) con
 	const FVector ReversedVelocity = -Velocity;
 	
 	// Set the mirrored velocity to the MovementComponent
-	MovementComponent->AddVelocity(ReversedVelocity * 2);
+	MovementComponent->SetVelocity(MirroredVelocity);
 }
 
 void UCollisionComponent::TickComponent(float DeltaTime, ELevelTick TickType,

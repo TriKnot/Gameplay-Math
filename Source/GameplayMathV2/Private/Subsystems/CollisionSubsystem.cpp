@@ -70,6 +70,7 @@ void UCollisionSubsystem::ClearAllCollisionsFromComponents()
 bool UCollisionSubsystem::RayCast(const FVector& RayOrigin, const FVector& RayDirection, const float RayLength,
 	FCollisionHit& CollisionHit)
 {
+	DrawDebugLine(GetWorld(), RayOrigin, RayOrigin + RayDirection * RayLength, FColor::Red, false, 15.0f, 0, 1.0f);
 	for (const UCollisionComponent* Component : CollisionComponents)
 	{
 		// Check which component type we are testing against
