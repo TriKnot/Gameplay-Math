@@ -46,13 +46,13 @@ void UMathMovementComponent::Step(float DeltaTime)
 	const FVector CurrentLocation = Owner->GetActorLocation();
 	const FVector StepVelocity = MoveData.Velocity * DeltaTime;
 	const FVector TargetLocation = CurrentLocation + StepVelocity;
-
+	const FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal();
+	
 	// Sweep
 	int32 MaxSweepStepCount = MaxSweepStepPerSecond * DeltaTime;
 	MaxSweepStepCount = FMath::Max(MaxSweepStepCount, MinSweepStepPerFrame);
 	if(bSweep && CollisionComponent && CollisionSubsystem)
 	{
-		const FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal();
 		const float Distance = FVector::Distance(TargetLocation, CurrentLocation);
 		const float SweepStepDistance = Distance / MaxSweepStepCount;
 		FCollisionHit Collision;
@@ -73,6 +73,12 @@ void UMathMovementComponent::Step(float DeltaTime)
 	{
 		Owner->SetActorLocation(TargetLocation);
 	}
+
+	// Rotate towards direction
+	// const FRotator TargetRotation = Direction.Rotation();
+	// const FRotator CurrentRotation = Owner->GetActorRotation();
+	// const FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime);
+	Owner->SetActorRotation(Direction.Rotation());
 
 }
 
