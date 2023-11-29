@@ -57,7 +57,7 @@ void UCollisionComponent::HandleCollision(const FCollisionHit& CollisionHit) con
 	// If inside of other collider, move this back
 	if( CollisionHit.Depth > 0.0f)
 	{
-		GetOwner()->SetActorLocation(GetOwner()->GetActorLocation() + Normal * CollisionHit.Depth);
+		//GetOwner()->SetActorLocation(GetOwner()->GetActorLocation() + Normal * CollisionHit.Depth);
 	}
         
 	// Calculate the mirrored velocity using the reflection formula
