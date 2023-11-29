@@ -23,9 +23,9 @@ bool UCollisionUtility::SpherePlaneCollision(	const FVector& SphereCenter, const
 		const FVector PointInPlane = LocalAdjustedPoint + PlaneCenter;
 		const FVector CollisionNormal = (SphereCenter - PointInPlane).GetSafeNormal();
 		
-		CollisionHit.Depth = SphereRadius - SphereCenter.Dot(PlaneNormal) - PlaneNormal.Dot(PlaneCenter);
+		CollisionHit.CollisionPoint = PointInPlane;
+		CollisionHit.Depth = FVector::Distance(SphereCenter, PointInPlane);
 		CollisionHit.CollisionNormal = CollisionNormal;
-		CollisionHit.CollisionPoint = PointInPlane + PlaneNormal * CollisionHit.Depth;
 		return true;
 	}
 	
@@ -278,7 +278,7 @@ bool UCollisionUtility::SphereTriangleCollision(const FVector& SphereCenter, con
 		if (FVector::DotProduct(Normal, DirectionToTriangle) < 0) {
 			CollisionHit.CollisionNormal *= -1;
 		}
-		CollisionHit.Depth = SphereRadius;
+		CollisionHit.Depth = (SphereRadius - DistanceToPlane);
 		return true;
 	}
 
