@@ -30,7 +30,7 @@ bool FBoxCollider::TestCollision(const FTransform Transform, const FSphereCollid
 bool FBoxCollider::TestCollision(const FTransform Transform, const FPlaneCollider& OtherCollider,
 	const FTransform OtherTransform, FCollisionHit& CollisionPoint) const
 {
-	return UCollisionUtility::AABBPlaneIntersection(Transform.GetLocation(), Extent, OtherTransform, OtherTransform.GetRotation().GetForwardVector(), OtherCollider.Extent, CollisionPoint);
+	return UCollisionUtility::AABBPlaneCollision(Transform.GetLocation(), Extent, OtherTransform, OtherTransform.GetRotation().GetForwardVector(), OtherCollider.Extent, CollisionPoint);
 }
 
 bool FBoxCollider::TestCollision(const FTransform Transform, const FBoxCollider& OtherCollider,
@@ -40,7 +40,7 @@ bool FBoxCollider::TestCollision(const FTransform Transform, const FBoxCollider&
 	const FVector MaxA = Transform.GetLocation() + Extent;
 	const FVector MinB = OtherTransform.GetLocation() - OtherCollider.Extent;
 	const FVector MaxB = OtherTransform.GetLocation() + OtherCollider.Extent;
-	return UCollisionUtility::AABBCollision(MinA, MaxA, MinB, MaxB, CollisionPoint);
+	return UCollisionUtility::AABBAABBCollision(MinA, MaxA, MinB, MaxB, CollisionPoint);
 }
 
 bool FBoxCollider::TestCollision(const FTransform Transform, ANoiseFloor* Other,

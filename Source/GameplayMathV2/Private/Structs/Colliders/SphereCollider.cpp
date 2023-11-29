@@ -47,5 +47,5 @@ bool FSphereCollider::TestCollision(const FTransform Transform, ANoiseFloor* Oth
 	TArray<FVector> TrianglePoints;
 	Other->FindClosestTriangle(Transform.GetLocation(), TrianglePoints);
 	
-	return UCollisionUtility::SphereTriangleIntersection(Transform.GetLocation(), Radius, TrianglePoints[0], TrianglePoints[1], TrianglePoints[2], CollisionPoint);
+	return UCollisionUtility::SphereTriangleCollision(Transform.GetLocation(), Radius, TrianglePoints[0], TrianglePoints[1], TrianglePoints[2], CollisionPoint);
 }
