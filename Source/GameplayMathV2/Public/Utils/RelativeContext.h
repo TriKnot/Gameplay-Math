@@ -3,10 +3,10 @@
 UENUM(BlueprintType, Meta = (Bitflags))
 enum class ERelativeContext
 {
-	Behind,
 	InFront,
-	ToTheLeft,
+	Behind,
 	ToTheRight,
+	ToTheLeft,
 	Above,
 	Below,
 	Close,

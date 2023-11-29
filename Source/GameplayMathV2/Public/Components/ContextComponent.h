@@ -34,7 +34,7 @@ protected:
 	
 private:
 	// Context variables
-	TObjectPtr<UContextSubsystem> ActorRelationSubSystem;
+	TObjectPtr<UContextSubsystem> ContextSubsystem;
 	UPROPERTY()
 	AMathActor* Owner;
 	FVector PreviousLocation;
@@ -45,5 +45,8 @@ private:
 	// Frequency In frames
 	UPROPERTY(EditAnywhere, Category= "Context", meta=( AllowPrivateAccess = "true" ))
 	int32 ContextUpdateFrequency;
-	int8 ContextUpdateFrequencyFrameCount;
+	int32 ContextUpdateFrequencyFrameCount;
+
+	UPROPERTY(EditAnywhere, Category= "Context", meta=( AllowPrivateAccess = "true" ))
+	bool bParseContext;
 };

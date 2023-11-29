@@ -3,22 +3,30 @@
 #include "Utils/ContextUtils.h"
 
 
-UContextSubsystem::UContextSubsystem()
-{
-}
-
-void UContextSubsystem::UpdateActorContext(UContextComponent* Component)
+void UContextSubsystem::UpdateActorContext(UContextComponent* Component) const
 {
 	if (!Component) return;
 	
-	// Loop through all actors in the world and update the context of the math actor
+	UContextComponent* ClosestComponent = GetClosestContextComponent(Component);
+	const int32 Context = UContextUtils::GetActorContext(Component, ClosestComponent);
+	Component->SetContext(Context);
+}
+
+UContextComponent* UContextSubsystem::GetClosestContextComponent(const UContextComponent* Component) const
+{
+	const FVector Location = Component->GetOwner()->GetActorLocation();
+	UContextComponent* ClosestComponent = nullptr;
+	float ClosestDistance = FLT_MAX;
 	for (UContextComponent* OtherComponent : Components)
 	{
-		UContextComponent* ContextActor = Cast<UContextComponent>(OtherComponent);
-		if(ContextActor == nullptr || ContextActor == Component) continue;
-		
-		const int32 Context = UContextUtils::GetActorContext(Component, ContextActor);
-		Component->SetContext(Context);
+		if( OtherComponent == Component) continue;
+		FVector OtherLocation = OtherComponent->GetOwner()->GetActorLocation();
+		if(FVector::Dist(Location, OtherLocation) < ClosestDistance)
+		{
+			ClosestDistance = FVector::Dist(Location, OtherLocation);
+			ClosestComponent = OtherComponent;
+		}
 	}
+	return ClosestComponent;
 }
 

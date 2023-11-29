@@ -4,6 +4,8 @@
 
 int32 UContextUtils::GetActorContext(UContextComponent* Component, UContextComponent* OtherComponent)
 {
+	if (!Component || !OtherComponent) return 0;
+	
 	int32 Result = 0;
 	const FContextParameters ActorParams = Component->GetContextParameters();
 	const FContextParameters OtherActorParams = OtherComponent->GetContextParameters();
@@ -38,7 +40,7 @@ int32 UContextUtils::GetActorContext(UContextComponent* Component, UContextCompo
 		SET_BIT(Result, static_cast<int32>(ERelativeContext::Below));
 	}
 
-	float Distance = FVector::Dist(Actor->GetActorLocation(), OtherActor->GetActorLocation());
+	const float Distance = FVector::Dist(Actor->GetActorLocation(), OtherActor->GetActorLocation());
 	
 	if(Distance < ActorParams.VisionRange)
 	{
