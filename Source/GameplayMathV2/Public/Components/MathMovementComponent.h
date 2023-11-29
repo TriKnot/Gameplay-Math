@@ -18,27 +18,27 @@ public:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	void Step(float DeltaTime);
+	virtual void Step(float DeltaTime);
 
 	// Velocity
 	FVector GetVelocity() const { return MoveData.Velocity; }
 	void SetVelocity(const FVector& NewVelocity) { MoveData.Velocity = NewVelocity; }
 	void AddVelocity(const FVector& Velocity);
-	void StopMovement();
+	virtual void StopMovement();
 	
 	
 	AMathActor* GetMathOwner() const { return Owner; }
 	
 	void SetMoveData(const FMoveData& NewMoveData) { MoveData = NewMoveData; }
 	FMoveData& GetMoveData() { return MoveData; }
-
+protected:
+	UPROPERTY(EditAnywhere, Category= "Movement", meta=( AllowPrivateAccess = "true" ))
+	FMoveData MoveData;
+	
 private:
 	UPROPERTY(VisibleAnywhere, meta=( AllowPrivateAccess = "true" ))
 	AMathActor* Owner;
 	
-	UPROPERTY(EditAnywhere, Category= "Movement", meta=( AllowPrivateAccess = "true" ))
-	FMoveData MoveData;
-
 	UPROPERTY(EditAnywhere, Category= "Movement", meta=( AllowPrivateAccess = "true" ))
 	bool bUseGravity = true;
 
