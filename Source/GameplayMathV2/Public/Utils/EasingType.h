@@ -3,7 +3,6 @@
 UENUM(BlueprintType)
 enum EEasingType
 {
-	None,
 	Linear,
 	SineIn,
 	SineOut,
@@ -37,13 +36,21 @@ enum EEasingType
 	BounceInOut
 };
 
+inline EEasingType MaxEasingType = EEasingType::BounceInOut;
+
 static EEasingType& operator++(EEasingType& EasingType)
 {
-	EasingType = static_cast<EEasingType>((static_cast<int>(EasingType) + 1) % static_cast<int>(EEasingType::BounceInOut));
+	EasingType = static_cast<EEasingType>((static_cast<int>(EasingType) + 1) % static_cast<int>(MaxEasingType));
 	return EasingType;
 }
 
 static EEasingType GetRandomEasingType()
 {
-	return static_cast<EEasingType>(FMath::RandRange(0, static_cast<int>(EEasingType::BounceInOut)));
+	return static_cast<EEasingType>(FMath::RandRange(0, static_cast<int>(MaxEasingType)));
 }
+
+static EEasingType GetNextEasingType(EEasingType CurrentEasingType)
+{
+	return static_cast<EEasingType>((static_cast<int>(CurrentEasingType) + 1) % static_cast<int>(MaxEasingType));
+}
+

@@ -55,8 +55,8 @@ public:
 	TEnumAsByte<EEasingType> EasingType = EEasingType::Linear;
 	UPROPERTY(EditAnywhere, Category = "Interpolation")
 	bool bUseRandomEasingType = false;
-	UPROPERTY(EditAnywhere, Category = "Interpolation")
-	float MoveDuration = 1.0f;
+	UPROPERTY(VisibleAnywhere, Category = "Interpolation")
+	float MoveDuration = 5.0f;
 	
 private:
 	UPROPERTY()

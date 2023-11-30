@@ -8,6 +8,13 @@ void UMovementSubSystem::Tick(float DeltaTime)
 	UpdateMoveData(GetWorld()->GetDeltaSeconds());
 }
 
+
+void UMovementSubSystem::Register(UMathMovementComponent* InComponent, EEasingType& EasingTypeToUpdate) {
+	EasingTypeToUpdate = LatestEasingType;
+	LatestEasingType = GetNextEasingType(LatestEasingType);
+	Register(InComponent);
+}
+
 void UMovementSubSystem::Register(UMathMovementComponent* InComponent)
 {
 	// Make sure we don't register the same actor twice

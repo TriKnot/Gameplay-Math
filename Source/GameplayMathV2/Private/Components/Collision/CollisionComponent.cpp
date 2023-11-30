@@ -83,7 +83,7 @@ void UCollisionComponent::PostEditChangeProperty(FPropertyChangedEvent& Property
 
 void UCollisionComponent::DrawDebugCollider() const
 {
-	if(!BHasCollided()) return;
+	if(!BHasCollided() || !bDrawDebugCollider) return;
 	for (FCollisionHit Collision : Collisions)
 	{
 		// Draw Collision Point

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "Utils/EasingType.h"
 #include "MovementSubsystem.generated.h"
 
 class UMathMovementComponent;
@@ -14,7 +15,9 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	
+	void Register(UMathMovementComponent* InComponent, EEasingType& EasingType);
 	void Register(UMathMovementComponent* InComponent);
+
 	void Unregister(UMathMovementComponent* InComponent);
 
 	void UpdateMoveData(float DeltaTime);
@@ -29,5 +32,7 @@ private:
 
 	UPROPERTY()
 	bool bDrawDebug;
+
+	EEasingType LatestEasingType = EEasingType::Linear;
 	
 };

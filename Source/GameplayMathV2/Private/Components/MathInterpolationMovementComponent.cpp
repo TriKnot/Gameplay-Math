@@ -6,7 +6,15 @@ void UMathInterpolationMovementComponent::BeginPlay()
 {
 	// Find Movement Subsystem and unregister
 	if(const TObjectPtr<UMovementSubSystem> MovementSubSystem = GetWorld()->GetSubsystem<UMovementSubSystem>())
-		MovementSubSystem->Register(this);
+	{
+		EEasingType EasingTypeValue = MoveData.EasingType.GetValue();
+
+		// Now pass the reference of EEasingTypeValue to the Register function
+		MovementSubSystem->Register(this, EasingTypeValue);
+
+		MoveData.EasingType = EasingTypeValue;
+		
+	}
 
 	MoveData.StartLocation = GetOwner()->GetActorLocation();
 	MoveData.TargetLocation = MoveData.StartLocation + FVector(0.0f, 0.0f, 10000.0f);
@@ -41,5 +49,5 @@ void UMathInterpolationMovementComponent::Step(float DeltaTime)
 void UMathInterpolationMovementComponent::StopMovement()
 {
 	Super::StopMovement();
-	MoveData.EasingValue = EEasingType::None;
+	MoveData.MoveDuration = FLT_MAX;
 }

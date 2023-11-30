@@ -57,6 +57,9 @@ protected:
 	bool bIsKinematic;
 
 	UPROPERTY(EditAnywhere, meta=( AllowPrivateAccess = "true" ))
+	bool bDrawDebugCollider;
+
+	UPROPERTY(EditAnywhere, meta=( AllowPrivateAccess = "true" ))
 	bool bIsCollisionActive;
 	
 	UPROPERTY()

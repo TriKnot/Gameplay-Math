@@ -55,7 +55,8 @@ void UCollisionSubsystem::Tick(float DeltaTime)
 			// DrawDebugLine(GetWorld(), TrianglePoints[2], TrianglePoints[0], FColor::Green, false, 5.0f, 0, 1.0f);
 			//
 		}
-		
+
+		Component->DrawDebugCollider();
 	}
 }
 

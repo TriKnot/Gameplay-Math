@@ -3,21 +3,14 @@
 void UPlaneCollisionComponent::DrawDebugCollider() const
 {
 	Super::DrawDebugCollider();
+	if(!bDrawDebugCollider) return;
 
 	FVector2d VisibleBounds = PlaneCollider.Extent;
 	if(PlaneCollider.Extent == FVector2d::ZeroVector)
 	{
 		VisibleBounds = FVector2d(1000000.0f, 1000000.0f);
 	}
-	//
-	// const FVector HalfRightVector = ThisTransform->GetRotation().GetRightVector() * VisibleBounds.X * 0.5f;
-	// const FVector HalfUpVector = ThisTransform->GetRotation().GetUpVector() * VisibleBounds.Y * 0.5f;
-	//
-	// const FVector UpperRight = ThisTransform->GetLocation() + HalfRightVector + HalfUpVector;
-	// const FVector LowerRight = ThisTransform->GetLocation() + HalfRightVector - HalfUpVector;
-	// const FVector UpperLeft = ThisTransform->GetLocation() - HalfRightVector + HalfUpVector;
-	// const FVector LowerLeft = ThisTransform->GetLocation() - HalfRightVector - HalfUpVector;
-
+	
 	const FVector HalfRightVector = GetOwner()->GetActorTransform().GetRotation().GetRightVector() * VisibleBounds.X * 0.5f;
 	const FVector HalfUpVector = GetOwner()->GetActorTransform().GetRotation().GetUpVector() * VisibleBounds.Y * 0.5f;
 
